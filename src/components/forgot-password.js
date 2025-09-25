@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Mail, ArrowLeft, AlertCircle, CheckCircle, Clock } from "lucide-react";
-
+/*router*/
+import { useNavigate } from "react-router-dom";
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -95,8 +98,7 @@ export default function ForgotPasswordScreen() {
   };
 
   const handleBackToLogin = () => {
-    // In a real app, this would navigate to login
-    console.log("Navigate to login");
+    navigate("/");
   };
 
   if (emailSent) {
@@ -242,13 +244,6 @@ export default function ForgotPasswordScreen() {
                 "Send Reset Link"
               )}
             </button>
-          </div>
-
-          {/* Demo Info */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 font-medium mb-2">Demo:</p>
-            <p className="text-xs text-gray-500">Use any email except "notfound@example.com" to test success flow</p>
-            <p className="text-xs text-gray-500">Use "notfound@example.com" to test error flow</p>
           </div>
 
           {/* Back to Login */}

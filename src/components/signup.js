@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle, CheckCircle, ArrowLeft } from "lucide-react";
-
+/*router*/
+import { useNavigate } from "react-router-dom";
 export default function SignUpScreen() {
   const [formData, setFormData] = useState({
     name: "",
@@ -14,6 +15,8 @@ export default function SignUpScreen() {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [signUpSuccess, setSignUpSuccess] = useState(false);
+
+  const navigate = useNavigate();
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -119,8 +122,7 @@ export default function SignUpScreen() {
   };
 
   const handleBackToLogin = () => {
-    // In a real app, this would navigate to login
-    console.log("Navigate to login");
+    navigate("/");
   };
 
   if (signUpSuccess) {
