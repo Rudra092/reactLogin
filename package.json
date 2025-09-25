@@ -1,8 +1,8 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage": "http://Rudra092.github.io/reactApp7",
   "private": true,
+  "homepage": "https://rudra092.github.io/reactApp7",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",

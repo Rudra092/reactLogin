@@ -1,6 +1,6 @@
 import './App.css';
 /*router*/
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginScreen from './components/login';
 import SignUpScreen from './components/signup';
 import ForgotPasswordScreen from './components/forgot-password';
