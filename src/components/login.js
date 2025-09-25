@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle } from "lucide-react";
-
+/*router*/
+import { Link } from 'react-router-dom';
 export default function LoginScreen() {
   const [formData, setFormData] = useState({
     email: "",
@@ -207,12 +208,11 @@ export default function LoginScreen() {
               </div>
 
               <div className="text-sm">
-                <a
-                  href="#"
+                <Link to="/forgot-password"
                   className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
                 >
                   Forgot password?
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -248,12 +248,11 @@ export default function LoginScreen() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <a
-                href="#"
+              <Link to="/signup"
                 className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
               >
                 Sign up here
-              </a>
+              </Link>
             </p>
           </div>
         </div>
