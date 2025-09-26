@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://reactlogin-hovt.onrender.com/api", // Replace with your backend
+  baseURL: "https://reactlogin-hovt.onrender.com/api/auth",
 });
 
 // Example requests
