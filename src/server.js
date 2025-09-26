@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const connectDB = require('./db');
 
 
 const app = express();
@@ -14,7 +14,7 @@ connectDB(process.env.MONGO_URI);
 
 
 // routes
-app.use('/api/auth', require('./routes/auth'));
+app.use('/api/auth', require('./auth'));
 
 
 app.get('/', (req, res) => res.send('Auth backend running'));
