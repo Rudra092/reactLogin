@@ -3,9 +3,10 @@ const router = express.Router();
 const asyncHandler = require('express-async-handler');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+import { sendResetEmail } from './sendEmail.js';
 
 const User = require('./user');
-const sendResetEmail = require('./sendEmail');
+const sendEmail = require('./sendEmail');
 
 
 // Helpers
