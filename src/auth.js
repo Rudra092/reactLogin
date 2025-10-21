@@ -62,39 +62,34 @@ token: generateToken(user._id),
 
 // @route POST /api/auth/forgot-password
 // @desc Create reset token and send email
-router.post('/forgot-password', asyncHandler(async (req, res) => {
-const { email } = req.body;
-if (!email) return res.status(400).json({ message: 'Please provide email' });
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
 
+    // 1️⃣ Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({ message: "If that email exists, a reset link has been sent." });
+    }
 
-const user = await User.findOne({ email });
-if (!user) return res.status(200).json({ message: 'If that email is registered, a reset link was sent.' }); // don't reveal
+    // 2️⃣ Generate reset token + link
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetLink = `https://yourfrontendsite.com/reset-password?token=${resetToken}`;
 
+    // 3️⃣ Send email
+    await sendResetEmail(email, resetLink);
 
-const resetToken = user.createPasswordResetToken();
-await user.save({ validateBeforeSave: false });
+    // 4️⃣ Save token in DB (optional)
+    user.resetToken = resetToken;
+    user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
+    await user.save();
 
-
-const resetURL = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-const message = `You requested a password reset. Click here: ${resetURL}\nIf you did not request this, please ignore.`;
-try {
-await sendEmail({
-to: user.email,
-subject: 'Password reset token',
-text: message,
-html: `<p>You requested a password reset. Click the link below to reset:</p><p><a href="${resetURL}">${resetURL}</a></p>`
+    res.status(200).json({ message: "Reset email sent successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to send reset email" });
+  }
 });
-res.json({ message: 'Password reset link sent if email exists' });
-} catch (err) {
-// cleanup
-user.resetPasswordToken = undefined;
-user.resetPasswordExpires = undefined;
-await user.save({ validateBeforeSave: false });
-console.error('Error sending email', err);
-res.status(500).json({ message: 'Error sending email' });
-}
-}));
-
 
 // @route POST /api/auth/reset-password/:token
 // @desc Reset password
