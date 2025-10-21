@@ -1,40 +1,51 @@
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Install: npm install @getbrevo/brevo
+const SibApiV3Sdk = require('@getbrevo/brevo');
 
 const sendResetEmail = async (userEmail, resetLink) => {
   try {
-    const msg = {
-      to: userEmail,
-      from: process.env.SENDGRID_FROM_EMAIL, // Must be verified in SendGrid
-      subject: 'Password Reset Request',
-      html: `
-        <div style="font-family: Arial, sans-serif; color: #333;">
-          <h2>Reset your password</h2>
-          <p>We received a request to reset your password. Click the button below to reset it:</p>
-          <p>
-            <a href="${resetLink}" 
-               style="background: #facc15; padding: 10px 20px; color: #000; text-decoration: none; border-radius: 6px; display: inline-block;">
-              Reset Password
-            </a>
-          </p>
-          <p style="margin-top: 20px; font-size: 14px; color: #666;">
-            Or copy and paste this link into your browser:<br>
-            <a href="${resetLink}" style="color: #4f46e5;">${resetLink}</a>
-          </p>
-          <p style="margin-top: 20px; font-size: 12px; color: #999;">
-            If you didn't request this, you can safely ignore this email.
-          </p>
-        </div>
-      `
-    };
+    // Initialize API client
+    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+    apiInstance.setApiKey(
+      SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
+      process.env.BREVO_API_KEY
+    );
 
-    await sgMail.send(msg);
-    console.log('✅ Password reset email sent via SendGrid');
+    // Email content
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+    sendSmtpEmail.subject = "Password Reset Request";
+    sendSmtpEmail.htmlContent = `
+      <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #333;">Reset your password</h2>
+        <p>We received a request to reset your password. Click the button below to reset it:</p>
+        <p style="margin: 30px 0;">
+          <a href="${resetLink}" 
+             style="background: #facc15; padding: 12px 24px; color: #000; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+            Reset Password
+          </a>
+        </p>
+        <p style="margin-top: 20px; font-size: 14px; color: #666;">
+          Or copy and paste this link into your browser:<br>
+          <a href="${resetLink}" style="color: #4f46e5; word-break: break-all;">${resetLink}</a>
+        </p>
+        <p style="margin-top: 30px; font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 20px;">
+          If you didn't request this, you can safely ignore this email.<br>
+          This link will expire in 1 hour.
+        </p>
+      </div>
+    `;
+    sendSmtpEmail.sender = { 
+      name: "Your App", 
+      email: "noreply@yourapp.com" // Can be any email, no verification needed!
+    };
+    sendSmtpEmail.to = [{ email: userEmail }];
+
+    // Send email
+    const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
+    console.log('✅ Email sent via Brevo:', data);
+    return data;
+
   } catch (error) {
-    console.error('❌ Error sending reset email:', error);
-    if (error.response) {
-      console.error('SendGrid Error:', error.response.body);
-    }
+    console.error('❌ Brevo Error:', error);
     throw new Error('Email sending failed');
   }
 };

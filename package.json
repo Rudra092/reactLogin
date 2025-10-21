@@ -5,6 +5,7 @@
   "private": true,
   "homepage": "https://rudra092.github.io/reactLogin",
   "dependencies": {
+    "@getbrevo/brevo": "^3.0.1",
     "@sendgrid/mail": "^8.1.6",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",
