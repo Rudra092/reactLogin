@@ -68,21 +68,25 @@ router.post('/forgot-password', async (req, res) => {
     // Hash the token before saving to DB (for security)
     const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
-    // 3️⃣ Create reset link with the PLAIN token (this goes in the email)
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
-    // 4️⃣ Send email FIRST (before saving to DB)
-    await sendResetEmail(email, resetLink);
-
-    // 5️⃣ Save HASHED token in DB
+    // 3️⃣ Save HASHED token in DB FIRST
     user.resetPasswordToken = hashedToken;
     user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
     await user.save();
 
+    // 4️⃣ Create reset link with the PLAIN token
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    // 5️⃣ Send email LAST (after DB save)
+    await sendResetEmail(email, resetLink);
+
     res.status(200).json({ message: "Reset email sent successfully" });
   } catch (err) {
     console.error('❌ Error in forgot-password:', err);
-    res.status(500).json({ message: "Failed to send reset email" });
+    // Return a more detailed error message
+    res.status(500).json({ 
+      message: "Failed to send reset email. Please try again later.",
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+    });
   }
 });
 
