@@ -2,9 +2,14 @@
 const SibApiV3Sdk = require('@getbrevo/brevo');
 
 const sendResetEmail = async (userEmail, resetLink) => {
+  console.log('📨 sendResetEmail called with:', { userEmail, resetLink });
+  
   try {
     // Initialize API client
+    console.log('🔧 Initializing Brevo API client...');
     const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+    
+    console.log('🔑 Setting API key...');
     apiInstance.setApiKey(
       SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
       process.env.BREVO_API_KEY
@@ -35,18 +40,22 @@ const sendResetEmail = async (userEmail, resetLink) => {
     `;
     sendSmtpEmail.sender = { 
       name: "Your App", 
-      email: "noreply@yourapp.com" // Can be any email, no verification needed!
+      email: "noreply@yourapp.com"
     };
     sendSmtpEmail.to = [{ email: userEmail }];
 
+    console.log('📤 Sending email via Brevo...');
     // Send email
     const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-    console.log('✅ Email sent via Brevo:', data);
+    console.log('✅ Email sent via Brevo successfully!', data);
     return data;
 
   } catch (error) {
-    console.error('❌ Brevo Error:', error);
-    throw new Error('Email sending failed');
+    console.error('❌ Brevo Error Details:');
+    console.error('Error object:', error);
+    console.error('Error message:', error.message);
+    console.error('Error response:', error.response?.body);
+    throw new Error('Email sending failed: ' + error.message);
   }
 };
 
