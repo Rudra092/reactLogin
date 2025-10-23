@@ -80,7 +80,7 @@ router.post('/forgot-password', async (req, res) => {
     console.log('💾 Token saved to database');
 
     // 4️⃣ Create reset link with the PLAIN token
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/#/reset-password/${resetToken}`;
     console.log('🔗 Reset link created:', resetLink);
 
     // 5️⃣ Check if Brevo API key exists
